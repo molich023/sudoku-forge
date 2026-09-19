@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Sudoku Forge</title>
+<style>
+:root{--bg:#080d1a;--panel:#10182a;--panel2:#172239;--line:#2a3958;--text:#edf4ff;--muted:#9eb0cf;--accent:#64b5ff;--good:#43d17a;--bad:#ff667d;--warn:#ffca62}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#18294b 0,#080d1a 42%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:12px;padding:10px 13px;cursor:pointer}button:hover{filter:brightness(1.15)}button.primary{background:#2469b8;border-color:#4188d7}.danger{color:#ff9cac}.app{max-width:1180px;margin:auto;padding:18px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between}.brand{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#3c9bff,#745cff);font-weight:800;font-size:21px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:minmax(320px,600px) 1fr;gap:18px;margin-top:18px}.panel{background:rgba(16,24,42,.88);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 12px 35px #0005}.toolbar,.levels,.stats{display:flex;gap:8px;flex-wrap:wrap}.levels button.active{outline:2px solid var(--accent)}.board{display:grid;grid-template-columns:repeat(9,1fr);aspect-ratio:1;margin:15px auto;max-width:560px;border:3px solid #61769f;border-radius:8px;overflow:hidden;background:#0a1120}.cell{border:1px solid #263653;display:grid;place-items:center;font-size:clamp(18px,5vw,34px);font-weight:650;background:#0c1425;user-select:none}.cell:nth-child(3n){border-right:2px solid #61769f}.cell:nth-child(n+19):nth-child(-n+27),.cell:nth-child(n+46):nth-child(-n+54){border-bottom:2px solid #61769f}.cell.given{background:#17253e;color:#d9e6ff}.cell.selected{background:#1c4d7b}.cell.peer{background:#132b48}.cell.same{background:#244b70}.cell.error{background:#5d2130;color:#ffdbe1}.cell.hint{box-shadow:inset 0 0 0 3px var(--warn)}.numpad{display:grid;grid-template-columns:repeat(9,1fr);gap:7px}.numpad button{font-size:18px}.row{display:flex;gap:8px;align-items:center;justify-content:space-between}.metric{padding:10px 12px;background:#0d1526;border:1px solid var(--line);border-radius:12px;min-width:90px}.metric b{display:block;font-size:18px}.tabs{display:flex;gap:6px;margin-bottom:12px}.tab{flex:1}.section{margin-top:14px}.notice{min-height:42px;padding:10px;border-radius:12px;background:#0d1526;color:var(--muted)}.notice.good{color:#b9ffd0;border:1px solid #287448}.notice.bad{color:#ffd1d8;border:1px solid #783343}.table{width:100%;border-collapse:collapse}.table td,.table th{padding:8px;border-bottom:1px solid var(--line);text-align:left}.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:20px}.modal.show{display:grid}.modalbox{max-width:440px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}.modalbox input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:white;margin:8px 0 12px}@media(max-width:850px){.grid{grid-template-columns:1fr}.app{padding:10px}.panel{padding:12px}.top{align-items:flex-start}.numpad{grid-template-columns:repeat(9,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand"><div class="logo">9</div><div><h1 style="margin:0;font-size:23px">Sudoku Forge</h1><div class="muted">Forge your logic. Master the grid.</div></div></div>
+  <button id="profileBtn">Player</button>
+</header>
+
+<div class="panel" style="margin-top:15px">
+  <div class="row"><div><b>Game Forge</b><div class="muted" id="challengeLabel">Classic puzzle</div></div><div class="toolbar"><button id="newBtn" class="primary">New Game</button><button id="pauseBtn">Pause</button></div></div>
+  <div class="levels section" id="levels"></div>
+</div>
+
+<main class="grid">
+<section class="panel">
+  <div class="stats">
+    <div class="metric"><span class="muted">Time</span><b id="timer">00:00</b></div>
+    <div class="metric"><span class="muted">Errors</span><b id="errors">0</b></div>
+    <div class="metric"><span class="muted">Accuracy</span><b id="accuracy">100%</b></div>
+    <div class="metric"><span class="muted">Score</span><b id="score">0</b></div>
+  </div>
+  <div id="notice" class="notice" style="margin-top:10px">Select a cell and tap a digit.</div>
+  <div id="board" class="board" aria-label="Sudoku board"></div>
+  <div class="numpad" id="numpad"></div>
+  <div class="toolbar section">
+    <button id="noteBtn">Notes</button><button id="hintBtn">Hint</button><button id="autoBtn">Auto-complete</button><button id="eraseBtn">Erase</button>
+  </div>
+</section>
+
+<aside class="panel">
+  <div class="tabs"><button class="tab primary" data-tab="dashboard">Dashboard</button><button class="tab" data-tab="challenges">Challenges</button><button class="tab" data-tab="leaderboard">Leaderboard</button></div>
+  <div id="dashboard" class="tabcontent">
+    <h2>Player analysis</h2>
+    <div id="analysis" class="muted"></div>
+    <div class="section"><h3>Statistics</h3><div id="statsBox"></div></div>
+  </div>
+  <div id="challenges" class="tabcontent" style="display:none">
+    <h2>Challenges</h2>
+    <p class="muted">Challenges are deterministic from the current date. Play online or offline; the same challenge ID produces the same puzzle on compatible builds.</p>
+    <div class="toolbar"><button onclick="startChallenge('daily')">Daily</button><button onclick="startChallenge('weekly')">Weekly</button><button onclick="startChallenge('monthly')">Monthly</button></div>
+    <p id="challengeInfo" class="notice"></p>
+  </div>
+  <div id="leaderboard" class="tabcontent" style="display:none">
+    <h2>Local leaderboard</h2>
+    <p class="muted">Offline scores are stored on this device. Production online ranking must be server-authoritative.</p>
+    <table class="table"><thead><tr><th>#</th><th>Player</th><th>Level</th><th>Score</th><th>Time</th></tr></thead><tbody id="leaderBody"></tbody></table>
+  </div>
+</aside>
+</main>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox"><h2>Player profile</h2><input id="nameInput" placeholder="Your display name" maxlength="24"><div class="toolbar"><button id="saveName" class="primary">Save</button><button id="closeModal">Close</button></div></div></div>
+<script src="src/app.js"></script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</body>
+</html>

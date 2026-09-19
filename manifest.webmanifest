@@ -1,0 +1,10 @@
+{
+  "name":"Sudoku Forge",
+  "short_name":"Sudoku Forge",
+  "start_url":"./index.html",
+  "display":"standalone",
+  "background_color":"#080d1a",
+  "theme_color":"#0b1020",
+  "description":"Offline-first modern Sudoku game.",
+  "icons":[]
+}
